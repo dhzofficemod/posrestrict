@@ -12,9 +12,18 @@ patch(ProductScreen.prototype, {
         const product = this.pos.db.get_product_by_barcode(code.base_code);
 
         if (product && !this.pos.isProductCategoryAllowed(product)) {
+            // Get the product's category name
+            let categoryName = "another POS";
+            if (product.pos_categ_id) {
+                const category = this.pos.db.get_category_by_id(product.pos_categ_id[0]);
+                if (category) {
+                    categoryName = category.name;
+                }
+            }
+
             // Show error notification for restricted products
             this.env.services.notification.add(
-                `Product "${product.display_name}" is not available in this POS due to category restrictions.`,
+                `Product "${product.display_name}" is from ${categoryName} and cannot be scanned in this POS.`,
                 {
                     type: "danger",
                 }

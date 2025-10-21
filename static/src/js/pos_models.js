@@ -10,16 +10,25 @@ patch(PosStore.prototype, {
      */
     async scan_product(parsed_code) {
         const product = this.db.get_product_by_barcode(parsed_code.base_code);
-        
+
         if (!product) {
             return false;
         }
 
         // Check category restrictions
         if (!this.isProductCategoryAllowed(product)) {
+            // Get the product's category name
+            let categoryName = "another POS";
+            if (product.pos_categ_id) {
+                const category = this.db.get_category_by_id(product.pos_categ_id[0]);
+                if (category) {
+                    categoryName = category.name;
+                }
+            }
+
             // Show error notification
             this.env.services.notification.add(
-                `Product "${product.display_name}" is not available in this POS due to category restrictions.`,
+                `Product "${product.display_name}" is from ${categoryName} and cannot be scanned in this POS.`,
                 {
                     type: "danger",
                     sticky: false,
