@@ -12,25 +12,19 @@ class PosSession(models.Model):
         """
         # First, find the product using the standard method
         product = super().find_product_by_barcode(barcode)
-
+        
         if not product:
             return False
-
+            
         # Check if the current POS config has category restrictions
         pos_config = self.config_id
-
+        
         if pos_config.limit_categories and pos_config.iface_available_categ_ids:
             # Check if the product's category is allowed
             if not pos_config._is_product_category_allowed(product):
-                # Get category name for the error message
-                category_name = product.pos_categ_id.name if product.pos_categ_id else 'Unknown'
-
-                # Raise a user-friendly error message
-                raise UserError(
-                    f"Product '{product.display_name}' from category '{category_name}' "
-                    f"is not available in this POS due to category restrictions."
-                )
-
+                # Return False to indicate product not found (respecting restrictions)
+                return False
+                
         return product
 
     def _get_pos_ui_product_product(self, params):
