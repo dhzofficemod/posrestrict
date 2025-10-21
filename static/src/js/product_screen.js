@@ -10,16 +10,22 @@ patch(ProductScreen.prototype, {
      */
     async _barcodeProductAction(code) {
         const product = this.pos.db.get_product_by_barcode(code.base_code);
-        
+
         if (product && !this.pos.isProductCategoryAllowed(product)) {
+            // Get category name
+            const categoryName = this.pos.getProductCategoryName(product);
+            const message = categoryName
+                ? `The product "${product.display_name}" from category "${categoryName}" cannot be added to this POS.`
+                : `The product "${product.display_name}" cannot be added to this POS due to category restrictions.`;
+
             // Show error message for restricted products
             this.popup.add("ErrorPopup", {
                 title: "Product Not Available",
-                body: `The product "${product.display_name}" cannot be added to this POS due to category restrictions.`,
+                body: message,
             });
             return;
         }
-        
+
         return await super._barcodeProductAction(code);
     },
 
