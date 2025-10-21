@@ -23,7 +23,7 @@ patch(ProductScreen.prototype, {
 
             // Show error notification for restricted products
             this.env.services.notification.add(
-                `Product "${product.display_name}" is from ${categoryName} and cannot be scanned in this POS.`,
+                `Produsul "${product.display_name}" este de la ${categoryName} și nu poate fi scanat în acest POS.`,
                 {
                     type: "danger",
                 }
