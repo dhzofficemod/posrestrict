@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Extend POS Configuration form to show category restriction info -->
+        <record id="view_pos_config_form_category_restriction" model="ir.ui.view">
+            <field name="name">pos.config.form.category.restriction</field>
+            <field name="model">pos.config</field>
+            <field name="inherit_id" ref="point_of_sale.view_pos_config_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='products']" position="after">
+                    <group name="category_restrictions" string="Category Restrictions Info" 
+                           invisible="not limit_categories">
+                        <field name="limit_categories" invisible="1"/>
+                        <div class="alert alert-info" role="alert" colspan="2">
+                            <strong>Category Restriction Active:</strong><br/>
+                            When category restrictions are enabled, products will only be available 
+                            (both via barcode scanning and manual search) if their POS category 
+                            is included in the allowed categories list above.
+                            <br/><br/>
+                            <strong>Note:</strong> This module ensures that barcode scanning 
+                            respects the same category restrictions as manual product search.
+                        </div>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
